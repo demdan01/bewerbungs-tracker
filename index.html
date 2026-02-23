@@ -17,11 +17,18 @@
             <button id="btnNew" class="btn btn--primary">Neue Bewerbung</button>
           </div>
         </header>
+
         <section class="controls">
           <div class="controls__row">
             <div class="controls__search">
-              <input type="search" id="searchInput" class="input input--search" placeholder="Suche nach Firma oder Stelle…"> 
+              <input
+                type="search"
+                id="searchInput"
+                class="input input--search"
+                placeholder="Suche nach Firma oder Stelle…"
+              />
             </div>
+
             <div class="controls__filter">
               <select id="statusFilter" class="select">
                 <option value="all">Alle</option>
@@ -32,20 +39,54 @@
                 <option value="rejected">Abgelehnt</option>
               </select>
             </div>
+
             <div class="controls__export">
               <button id="btnExportCsv" class="btn btn--secondary">Export CSV</button>
             </div>
           </div>
         </section>
+
         <main class="board">
           <div class="board__scroll">
             <div class="board__track">
               <section class="column" data-status="open">
                 <div class="column__header">
                   <h2 class="column__title">Offen</h2>
-                  <span class="column__badge">0</span> 
+                  <span class="column__badge">0</span>
                 </div>
                 <div class="column__body" data-list="open"></div>
+              </section>
+
+              <section class="column" data-status="interview">
+                <div class="column__header">
+                  <h2 class="column__title">Bewerbungsgespräch</h2>
+                  <span class="column__badge">0</span>
+                </div>
+                <div class="column__body" data-list="interview"></div>
+              </section>
+
+              <section class="column" data-status="test">
+                <div class="column__header">
+                  <h2 class="column__title">Test</h2>
+                  <span class="column__badge">0</span>
+                </div>
+                <div class="column__body" data-list="test"></div>
+              </section>
+
+              <section class="column" data-status="offer">
+                <div class="column__header">
+                  <h2 class="column__title">Angebot</h2>
+                  <span class="column__badge">0</span>
+                </div>
+                <div class="column__body" data-list="offer"></div>
+              </section>
+
+              <section class="column" data-status="rejected">
+                <div class="column__header">
+                  <h2 class="column__title">Abgelehnt</h2>
+                  <span class="column__badge">0</span>
+                </div>
+                <div class="column__body" data-list="rejected"></div>
               </section>
             </div>
           </div>
