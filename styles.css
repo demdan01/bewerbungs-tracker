@@ -30,11 +30,14 @@
   --lh-col: 18px;
   --lh-meta: 16px;
 
-  /* Optional: weights */
+  /* weights */
   --fw-regular: 400;
   --fw-medium: 500;
   --fw-semibold: 600;
   --fw-bold: 700;
+
+  /* border radius */
+  --radius: 0px;
 }
 
 * {
@@ -42,47 +45,101 @@
 }
 
 body {
-    background-color: var(--bg-page);
-    color: var(--text);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    font-size: var(--fs-base);
-    line-height: var(--lh-base);
-    margin: 0;
-
+  background-color: var(--bg-page);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  margin: 0;
 }
 
 h1, h2 {
-    margin: 0;
+  margin: 0;
 }
 
 button, input, select {
-    font: inherit;
+  font: inherit;
 }
 
 .container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--bg-panel);
-    border: 1px solid var(--border);
-    padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border);
+  padding: 15px;
 }
 
 .btn {
-    border-radius: 6px;
-    padding: 10px 14px;
-    cursor: pointer;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-radius: var(--radius);
 }
 
 .btn--primary {
-    background-color: var(--btn-primary-bg);
-    color: var(--btn-primary-text);
-    border: 1px solid var(--btn-primary-bg);
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: 1px solid var(--btn-primary-bg);
+  border-radius: 6px;
 
+}
+
+.btn--secondary {
+  border: 1px solid var(--btn-secondary-border);
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+}
+
+.controls {
+  margin-top: 15px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-panel);
+}
+
+.controls__row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.controls__search {
+  flex: 1;
+  min-width: 0;
+}
+
+.controls__search .input--search {
+  width: 100%;
+  display: block;
+}
+
+.controls .btn,
+.controls .input,
+.controls .select {
+  height: 40px;
+}
+
+.input,
+.select {
+  border-radius: var(--radius);
+}
+
+.input {
+  width: 100%;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-page);
+  
+}
+
+.select {
+  padding: 0 36px 0 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-page);
 }
