@@ -1,0 +1,60 @@
+:root {
+  /* ===== Colors ===== */
+  --bg-page: #ffffff;
+  --bg-panel: #fafafa;     /* header + controls */
+  --bg-column: #f5f5f5;    /* kanban column fill */
+  --bg-card: #ffffff;
+
+  --border: #d4d4d4;
+
+  --text: #0a0a0a;
+  --muted: #737373;
+
+  /* Buttons */
+  --btn-primary-bg: #171717;
+  --btn-primary-text: #ffffff;
+
+  --btn-secondary-bg: #ffffff;
+  --btn-secondary-text: #0a0a0a;
+  --btn-secondary-border: #d4d4d4;
+
+  /* Font sizes */
+  --fs-base: 14px;     /* body / ui */
+  --fs-h1: 18px;       /* page title */
+  --fs-col: 13px;      /* column title */
+  --fs-meta: 12px;     /* dates / small links */
+
+  /* Line heights */
+  --lh-base: 20px;
+  --lh-h1: 24px;
+  --lh-col: 18px;
+  --lh-meta: 16px;
+
+  /* Optional: weights */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-page);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
+    margin: 0;
+
+}
+
+h1, h2 {
+    margin: 0;
+}
+
+button, input, select {
+    font: inherit;
+}
