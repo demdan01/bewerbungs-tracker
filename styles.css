@@ -38,6 +38,7 @@
 
   /* border radius */
   --radius: 0px;
+  --radius-badge: 4px;
 }
 
 * {
@@ -161,4 +162,26 @@ button, input, select {
   background-color: var(--bg-column);
   padding: 15px;
   min-height: 60vh;
+}
+
+.column__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 15px;
+}
+
+.column__badge {
+  font-size: var(--fs-meta);
+  background-color: var(--btn-secondary-border);
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-badge);
+  line-height: var(--lh-meta);
+}
+
+.column__title {
+  font-size: var(--fs-col);
+  line-height: var(--lh-col);
+  font-weight: var(--fw-bold);
 }
