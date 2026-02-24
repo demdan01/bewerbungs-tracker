@@ -64,3 +64,25 @@ button, input, select {
     margin: 0 auto;
     padding: 24px;
 }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border);
+    padding: 15px;
+}
+
+.btn {
+    border-radius: 6px;
+    padding: 10px 14px;
+    cursor: pointer;
+}
+
+.btn--primary {
+    background-color: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+    border: 1px solid var(--btn-primary-bg);
+
+}
