@@ -143,3 +143,22 @@ button, input, select {
   border: 1px solid var(--border);
   background: var(--bg-page);
 }
+
+.board__scroll {
+  overflow-x: auto;
+  padding-top: 15px;
+  padding-bottom: 10px;
+}
+
+.board__track {
+  display: flex;
+  gap: 15px;
+}
+
+.column {
+  flex-shrink: 0;
+  width: 270px;
+  background-color: var(--bg-column);
+  padding: 15px;
+  min-height: 60vh;
+}
