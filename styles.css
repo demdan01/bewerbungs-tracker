@@ -185,3 +185,45 @@ button, input, select {
   line-height: var(--lh-col);
   font-weight: var(--fw-bold);
 }
+
+.column__body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: var(--radius);
+}
+
+.card__company {
+  font-weight: var(--fw-bold);
+}
+
+.card__role {
+  font-weight: var(--fw-regular);
+}
+
+.card__meta {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+  font-weight: var(--fw-regular);
+}
+
+.card__link {
+  display: inline-block;
+  font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.card__link:hover {
+  text-decoration: underline;
+}
