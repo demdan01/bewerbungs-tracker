@@ -53,12 +53,25 @@ const state = {
 }
 
 function render() {
-  console.log("render called");
+  
 }
 
 function init() {
-  console.log("init called");
+  bindEvents();
   render();
+}
+
+function bindEvents() {
+
+searchInput.addEventListener("input", (e) => {
+  state.query = e.target.value.trim().toLowerCase();
+  render();
+});
+
+statusFilter.addEventListener("change", (e) => {
+  state.statusFilter = e.target.value;
+  render();
+});
 }
 
 init();
