@@ -44,3 +44,21 @@ STATUSES.forEach((status) => {
     throw new Error(`Missing badge mapping for status: ${status}`);
   }
 });
+
+const state = {
+  apps: [],
+  query: "",
+  statusFilter: "all",
+  editingId: null
+}
+
+function render() {
+  console.log("render called");
+}
+
+function init() {
+  console.log("init called");
+  render();
+}
+
+init();
