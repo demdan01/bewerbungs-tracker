@@ -53,7 +53,11 @@ const state = {
 }
 
 function render() {
+  const total = state.apps.length;
   
+  STATUSES.forEach((status) => {
+    badgesByStatus[status].textContent = String(total);
+  });
 }
 
 function init() {
