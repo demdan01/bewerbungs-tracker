@@ -58,7 +58,9 @@ function render() {
   const countsByStatus = {};
   STATUSES.forEach((s) => (countsByStatus[s] = 0));
 
-  const visibleApps = state.apps;
+  const visibleApps = state.apps.filter((app) => {
+  return matchesQuery(app, state.query) && matchesStatus(app, state.statusFilter);
+});
 
   visibleApps.forEach((app) => {
   const targetBody = bodiesByStatus[app.status];
@@ -135,5 +137,22 @@ function createCard(app) {
   }
   return article;
 }
+
+function matchesQuery(app, query) {
+  if (!query) return true;
+
+  const q = query.toLowerCase();
+  const company = app.company?.toLowerCase() ?? "";
+  const role = app.role?.toLowerCase() ?? "";
+
+  return company.includes(q) || role.includes(q);
+}
+
+function matchesStatus(app, statusFilter) {
+  if (statusFilter === "all") return true;
+  return app.status === statusFilter;
+}
+
+ 
 
 init();
