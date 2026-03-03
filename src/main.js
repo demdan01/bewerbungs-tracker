@@ -1,4 +1,5 @@
 
+import { loadApps, saveApps } from "./storage.js";
 
 /*DOM References*/
 const btnNew = document.getElementById("btnNew");
@@ -79,11 +80,17 @@ STATUSES.forEach((s) => {
 function init() {
   bindEvents();
 
-  state.apps = [
-  { id: "1", company: "Musterfirma GmbH", role: "Fachinformatiker AE", status: "open", appliedAt: "2026-02-23", link: "#" },
-  { id: "2", company: "Beispiel AG", role: "IT Support", status: "interview", appliedAt: "2026-02-20" },
-  { id: "3", company: "Demo KG", role: "Systemintegration", status: "rejected" },
-];
+  state.apps = loadApps();
+
+  if (state.apps.length === 0) {
+    state.apps = [
+      { id: "1", company: "Musterfirma GmbH", role: "Fachinformatiker AE", status: "open", appliedAt: "2026-02-23", link: "#" },
+      { id: "2", company: "Beispiel AG", role: "IT Support", status: "interview", appliedAt: "2026-02-20" },
+      { id: "3", company: "Demo KG", role: "Systemintegration", status: "rejected" },
+    ];
+    saveApps(state.apps);
+  }
+
   render();
 }
 
