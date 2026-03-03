@@ -160,14 +160,6 @@ function matchesStatus(app, statusFilter) {
   return app.status === statusFilter;
 }
 
-function debugAddTestEntry() {
-  state.apps.unshift(
-    { id: Date.now().toString(), company: "Test Firma", role: "Testrolle", status: "rejected" }
-  );
-  saveApps(state.apps);
-  render();
-}
 
- window.debugAddTestEntry = debugAddTestEntry;
 
 init();
