@@ -6,6 +6,7 @@ const btnNew = document.getElementById("btnNew");
 const searchInput = document.getElementById("searchInput");
 const statusFilter = document.getElementById("statusFilter");
 const btnExportCsv = document.getElementById("btnExportCsv");
+const boardTrackEl = document.querySelector(".board__track");
 
 /*Status constants*/
 const STATUSES = ["open","interview","test","offer","rejected"];
@@ -120,6 +121,25 @@ btnNew.addEventListener("click", () => {
   render();
 });
 
+boardTrackEl.addEventListener("click", (e) => {
+  if (e.target.dataset.action !== "delete") return;
+
+  const cardEl = e.target.closest(".card");
+  if (!cardEl) return;
+
+  const cardId = cardEl.dataset.id;
+
+  const willDelete = confirm("Willst du das wirklich löschen?");
+  if (!willDelete) return;
+
+  const index = state.apps.findIndex((app) => app.id === cardId);
+  if (index !== -1) {
+    state.apps.splice(index, 1);
+    saveApps(state.apps);
+    render();
+  }
+});
+
 }
 
 function clearColumns() {
@@ -133,6 +153,7 @@ function clearColumns() {
 function createCard(app) {
   const article = document.createElement("article");
   article.classList.add("card");
+  article.dataset.id = app.id;
 
   const company = document.createElement("div");
   company.classList.add("card__company");
@@ -146,9 +167,15 @@ function createCard(app) {
   meta.classList.add("card__meta");
   meta.textContent = app.appliedAt ?? "";
 
+  const deleteButton = document.createElement("button");
+  deleteButton.classList.add("card__delete");
+  deleteButton.setAttribute("data-action", "delete");
+  deleteButton.textContent = "Löschen";
+  
   article.appendChild(company);
   article.appendChild(role);
   article.appendChild(meta);
+  article.appendChild(deleteButton);
 
   if (app.link) {
     const link = document.createElement("a");
