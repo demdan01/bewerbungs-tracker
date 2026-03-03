@@ -140,6 +140,23 @@ boardTrackEl.addEventListener("click", (e) => {
   }
 });
 
+  boardTrackEl.addEventListener("change", (e) => {
+  if (e.target.dataset.action !== "status") return;
+
+  const cardEl = e.target.closest(".card");
+  if (!cardEl) return;
+
+  const cardId = cardEl.dataset.id;
+  const newStatus = e.target.value;
+
+  const app = state.apps.find((a) => a.id === cardId);
+  if (!app) return;
+
+  app.status = newStatus;
+  saveApps(state.apps);
+  render();
+});
+
 }
 
 function clearColumns() {
@@ -171,11 +188,24 @@ function createCard(app) {
   deleteButton.classList.add("card__delete");
   deleteButton.setAttribute("data-action", "delete");
   deleteButton.textContent = "Löschen";
-  
+
+  const cardStatusDropdown = document.createElement("select");
+  cardStatusDropdown.classList.add("card__status");
+  cardStatusDropdown.dataset.action = "status";
+
+  cardStatusDropdown.add(new Option("Offen", "open"));
+  cardStatusDropdown.add(new Option("Bewerbungsgespräch", "interview"));
+  cardStatusDropdown.add(new Option("Test", "test"));
+  cardStatusDropdown.add(new Option("Angebot", "offer"));
+  cardStatusDropdown.add(new Option("Abgelehnt", "rejected"));
+
+  cardStatusDropdown.value = app.status;
+
   article.appendChild(company);
   article.appendChild(role);
   article.appendChild(meta);
   article.appendChild(deleteButton);
+  article.appendChild(cardStatusDropdown);
 
   if (app.link) {
     const link = document.createElement("a");
