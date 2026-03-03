@@ -105,6 +105,21 @@ statusFilter.addEventListener("change", (e) => {
   state.statusFilter = e.target.value;
   render();
 });
+
+btnNew.addEventListener("click", () => {
+  state.apps.unshift({
+    id: Date.now().toString(),
+    company: "Neue Firma",
+    role: "Neue Rolle",
+    status: "open",
+    appliedAt: "2026-02-23",
+    link: "#",
+  });
+
+  saveApps(state.apps);
+  render();
+});
+
 }
 
 function clearColumns() {
