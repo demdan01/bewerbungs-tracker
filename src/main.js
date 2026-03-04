@@ -2,11 +2,23 @@
 import { loadApps, saveApps } from "./storage.js";
 
 /*DOM References*/
-const btnNew = document.getElementById("btnNew");
-const searchInput = document.getElementById("searchInput");
-const statusFilter = document.getElementById("statusFilter");
-const btnExportCsv = document.getElementById("btnExportCsv");
-const boardTrackEl = document.querySelector(".board__track");
+const btnNew          = document.getElementById("btnNew");
+const searchInput     = document.getElementById("searchInput");
+const statusFilter    = document.getElementById("statusFilter");
+const btnExportCsv    = document.getElementById("btnExportCsv");
+const boardTrackEl    = document.querySelector(".board__track");
+
+const modalEl         = document.getElementById("appModal");
+const formEl          = document.getElementById("appForm");
+const companyInput    = document.getElementById("companyInput");
+const roleInput       = document.getElementById("roleInput");
+const statusInput     = document.getElementById("statusInput");
+const dateInput       = document.getElementById("dateInput");
+const linkInput       = document.getElementById("linkInput");
+const cancelBtn       = document.getElementById("cancelBtn");
+
+
+
 
 /*Status constants*/
 const STATUSES = ["open","interview","test","offer","rejected"];
@@ -66,7 +78,10 @@ function render() {
 
   visibleApps.forEach((app) => {
   const targetBody = bodiesByStatus[app.status];
-  if (!targetBody) throw new Error("targetBody is undefined!");
+  if (!targetBody) {
+  console.warn("Skipping app with invalid status:", app);
+  return;
+  }
   const cardEl = createCard(app);
   targetBody.append(cardEl);
   countsByStatus[app.status] += 1;
@@ -104,20 +119,6 @@ searchInput.addEventListener("input", (e) => {
 
 statusFilter.addEventListener("change", (e) => {
   state.statusFilter = e.target.value;
-  render();
-});
-
-btnNew.addEventListener("click", () => {
-  state.apps.unshift({
-    id: Date.now().toString(),
-    company: "Neue Firma",
-    role: "Neue Rolle",
-    status: "open",
-    appliedAt: "2026-02-23",
-    link: "#",
-  });
-
-  saveApps(state.apps);
   render();
 });
 
@@ -169,6 +170,60 @@ function clearColumns() {
     if (!bodyEl) throw new Error(`Missing body element for status: ${status}`);
     bodyEl.innerHTML = "";
   });
+
+  btnNew.addEventListener("click", () => {
+    state.editingId = null;
+    formEl.reset();
+    statusInput.value = "open";
+    modalEl.showModal();
+  });
+
+  formEl.addEventListener("submit", (e) => {
+  e.preventDefault(); 
+
+  const companyField  = companyInput.value.trim();
+  const roleField     = roleInput.value.trim();
+  let   statusField   = statusInput.value;     
+  const dateField     = dateInput.value;         
+  const linkField     = linkInput.value.trim();
+
+  if (!STATUSES.includes(statusField)) statusField = "open";
+
+  if (!companyField || !roleField) return;
+
+  if (state.editingId === null) {
+    const newId = Date.now().toString();
+  
+    state.apps.unshift({
+      id: newId,
+      company: companyField,
+      role: roleField,
+      status: statusField,
+      appliedAt: dateField,
+      link: linkField,
+    });
+  } else {
+    const app = state.apps.find((a) => a.id === state.editingId);
+    if (!app) return;
+
+    app.company   = companyField;
+    app.role      = roleField;
+    app.status    = statusField;
+    app.appliedAt = dateField;
+    app.link      = linkField;
+
+    state.editingId = null;
+  }
+
+  saveApps(state.apps);
+  render();
+
+  modalEl.close();
+  formEl.reset();
+
+  statusInput.value = "open";
+});
+
 }
 
 function createCard(app) {
