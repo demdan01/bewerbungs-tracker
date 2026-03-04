@@ -66,6 +66,14 @@ const state = {
   editingId: null
 }
 
+function clearColumns() {
+  STATUSES.forEach((status) => {
+    const bodyEl = bodiesByStatus[status];
+    if (!bodyEl) throw new Error(`Missing column body for status: ${status}`);
+    bodyEl.innerHTML = "";
+  });
+}
+
 function render() {
   clearColumns()
   
