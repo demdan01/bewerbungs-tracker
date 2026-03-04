@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>bewerbungs-tracker</title>
   </head>
+
   <body>
     <div id="app" class="app">
       <div class="container">
@@ -42,7 +43,9 @@
             </div>
 
             <div class="controls__export">
-              <button id="btnExportCsv" class="btn btn--secondary">Export CSV</button>
+              <button id="btnExportCsv" class="btn btn--secondary">
+                Export CSV
+              </button>
             </div>
           </div>
         </section>
@@ -55,11 +58,14 @@
                   <h2 class="column__title">Offen</h2>
                   <span class="column__badge">0</span>
                 </div>
+
                 <div class="column__body" data-list="open">
                   <!-- Dummy Content für CSS Layout - JavaScript rendert hier später die Cards -->
                   <article class="card">
                     <div class="card__company">Musterfirma GmbH</div>
-                    <div class="card__role">Fachinformatiker Anwendungsentwicklung</div>
+                    <div class="card__role">
+                      Fachinformatiker Anwendungsentwicklung
+                    </div>
                     <div class="card__meta">2026-02-23</div>
                     <a href="#" class="card__link">Link</a>
                   </article>
@@ -100,9 +106,8 @@
             </div>
           </div>
         </main>
-      </div>
-    </div>
 
+        
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
