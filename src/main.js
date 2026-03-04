@@ -243,6 +243,13 @@ function bindEvents() {
 
     statusInput.value = "open";
   });
+
+  cancelBtn.addEventListener("click", () => {
+    state.editingId = null;
+    modalEl.close();
+    formEl.reset();
+    statusInput.value = "open";
+  });
 }
 
 function createCard(app) {
