@@ -250,7 +250,7 @@ function bindEvents() {
   });
 
   btnExportCsv.addEventListener("click", () => {
-    const csv = toCsv(state.apps);
+    const csv = toCsv(getVisibleApps());
     downloadCsv(csv, "bewerbungen.csv");
   });
 }
