@@ -112,34 +112,54 @@ function init() {
 
 function bindEvents() {
 
-searchInput.addEventListener("input", (e) => {
-  state.query = e.target.value.trim().toLowerCase();
-  render();
-});
-
-statusFilter.addEventListener("change", (e) => {
-  state.statusFilter = e.target.value;
-  render();
-});
-
-boardTrackEl.addEventListener("click", (e) => {
-  if (e.target.dataset.action !== "delete") return;
-
-  const cardEl = e.target.closest(".card");
-  if (!cardEl) return;
-
-  const cardId = cardEl.dataset.id;
-
-  const willDelete = confirm("Willst du das wirklich löschen?");
-  if (!willDelete) return;
-
-  const index = state.apps.findIndex((app) => app.id === cardId);
-  if (index !== -1) {
-    state.apps.splice(index, 1);
-    saveApps(state.apps);
+  searchInput.addEventListener("input", (e) => {
+    state.query = e.target.value.trim().toLowerCase();
     render();
-  }
-});
+  });
+
+  statusFilter.addEventListener("change", (e) => {
+    state.statusFilter = e.target.value;
+    render();
+  });
+
+  boardTrackEl.addEventListener("click", (e) => {
+    const action = e.target.dataset.action;
+
+    if (action !== "delete" && action !== "edit") return;
+
+    const cardEl = e.target.closest(".card");
+    if (!cardEl) return;
+
+    const cardId = cardEl.dataset.id;
+
+    if (action === "delete") {
+      const willDelete = confirm("Willst du das wirklich löschen?");
+      if (!willDelete) return;
+
+      const index = state.apps.findIndex((app) => app.id === cardId);
+      if (index !== -1) {
+        state.apps.splice(index, 1);
+        saveApps(state.apps);
+        render();
+      }
+      return;
+    }
+
+    if (action === "edit") {
+      const app = state.apps.find((a) => a.id === cardId);
+      if (!app) return;
+
+      state.editingId = cardId;
+
+      companyInput.value = app.company ?? "";
+      roleInput.value = app.role ?? "";
+      statusInput.value = app.status ?? "open";
+      dateInput.value = app.appliedAt ?? "";
+      linkInput.value = app.link ?? "";
+
+      modalEl.showModal();
+    }
+    });
 
   boardTrackEl.addEventListener("change", (e) => {
   if (e.target.dataset.action !== "status") return;
@@ -156,74 +176,73 @@ boardTrackEl.addEventListener("click", (e) => {
   app.status = newStatus;
   saveApps(state.apps);
   render();
-});
-
-btnExportCsv.addEventListener("click", () => {
-  const csv = toCsv(state.apps);
-  downloadCsv(csv, "bewerbungen.csv");
-});
-}
-
-function clearColumns() {
-  STATUSES.forEach((status) => {
-    const bodyEl = bodiesByStatus[status];
-    if (!bodyEl) throw new Error(`Missing body element for status: ${status}`);
-    bodyEl.innerHTML = "";
   });
 
-  btnNew.addEventListener("click", () => {
-    state.editingId = null;
-    formEl.reset();
-    statusInput.value = "open";
-    modalEl.showModal();
+  btnExportCsv.addEventListener("click", () => {
+    const csv = toCsv(state.apps);
+    downloadCsv(csv, "bewerbungen.csv");
   });
-
-  formEl.addEventListener("submit", (e) => {
-  e.preventDefault(); 
-
-  const companyField  = companyInput.value.trim();
-  const roleField     = roleInput.value.trim();
-  let   statusField   = statusInput.value;     
-  const dateField     = dateInput.value;         
-  const linkField     = linkInput.value.trim();
-
-  if (!STATUSES.includes(statusField)) statusField = "open";
-
-  if (!companyField || !roleField) return;
-
-  if (state.editingId === null) {
-    const newId = Date.now().toString();
-  
-    state.apps.unshift({
-      id: newId,
-      company: companyField,
-      role: roleField,
-      status: statusField,
-      appliedAt: dateField,
-      link: linkField,
-    });
-  } else {
-    const app = state.apps.find((a) => a.id === state.editingId);
-    if (!app) return;
-
-    app.company   = companyField;
-    app.role      = roleField;
-    app.status    = statusField;
-    app.appliedAt = dateField;
-    app.link      = linkField;
-
-    state.editingId = null;
   }
 
-  saveApps(state.apps);
-  render();
+  function clearColumns() {
+    STATUSES.forEach((status) => {
+      const bodyEl = bodiesByStatus[status];
+      if (!bodyEl) throw new Error(`Missing body element for status: ${status}`);
+      bodyEl.innerHTML = "";
+    });
 
-  modalEl.close();
-  formEl.reset();
+    btnNew.addEventListener("click", () => {
+      state.editingId = null;
+      formEl.reset();
+      statusInput.value = "open";
+      modalEl.showModal();
+    });
 
-  statusInput.value = "open";
-});
+    formEl.addEventListener("submit", (e) => {
+    e.preventDefault(); 
 
+    const companyField  = companyInput.value.trim();
+    const roleField     = roleInput.value.trim();
+    let   statusField   = statusInput.value;     
+    const dateField     = dateInput.value;         
+    const linkField     = linkInput.value.trim();
+
+    if (!STATUSES.includes(statusField)) statusField = "open";
+
+    if (!companyField || !roleField) return;
+
+    if (state.editingId === null) {
+      const newId = Date.now().toString();
+    
+      state.apps.unshift({
+        id: newId,
+        company: companyField,
+        role: roleField,
+        status: statusField,
+        appliedAt: dateField,
+        link: linkField,
+      });
+    } else {
+      const app = state.apps.find((a) => a.id === state.editingId);
+      if (!app) return;
+
+      app.company   = companyField;
+      app.role      = roleField;
+      app.status    = statusField;
+      app.appliedAt = dateField;
+      app.link      = linkField;
+
+      state.editingId = null;
+    }
+
+    saveApps(state.apps);
+    render();
+
+    modalEl.close();
+    formEl.reset();
+
+    statusInput.value = "open";
+  });
 }
 
 function createCard(app) {
@@ -260,9 +279,14 @@ function createCard(app) {
 
   cardStatusDropdown.value = app.status;
 
+  const editCardBtn = document.createElement("button");
+  editCardBtn.dataset.action = "edit";
+  editCardBtn.textContent = "Bearbeiten";
+
   article.appendChild(company);
   article.appendChild(role);
   article.appendChild(meta);
+  article.appendChild(editCardBtn);
   article.appendChild(deleteButton);
   article.appendChild(cardStatusDropdown);
 
