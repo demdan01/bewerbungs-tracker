@@ -157,6 +157,10 @@ boardTrackEl.addEventListener("click", (e) => {
   render();
 });
 
+btnExportCsv.addEventListener("click", () => {
+  const csv = toCsv(state.apps);
+  downloadCsv(csv, "bewerbungen.csv");
+});
 }
 
 function clearColumns() {
@@ -232,6 +236,55 @@ function matchesStatus(app, statusFilter) {
   return app.status === statusFilter;
 }
 
+function escapeCsvValue(value, delimiter = ";") {
+  const s = value == null ? "" : String(value);
 
+  const mustQuote =
+    s.includes('"') || s.includes("\n") || s.includes("\r") || s.includes(delimiter);
+
+  if (!mustQuote) return s;
+
+  const escaped = s.replace(/"/g, '""');
+  return `"${escaped}"`;
+}
+
+function toCsv(apps) {
+  
+  const delimiter = ";";
+  const headers = ["id", "company", "role", "status", "appliedAt", "link"];
+
+  const lines = [];
+  lines.push(headers.join(delimiter));
+
+  apps.forEach((app) => {
+    const row = [
+      app.id,
+      app.company,
+      app.role,
+      app.status,
+      app.appliedAt,
+      app.link,
+    ].map((v) => escapeCsvValue(v, delimiter));
+
+    lines.push(row.join(delimiter));
+  });
+
+  return "\ufeff" + lines.join("\r\n");
+}
+
+function downloadCsv(csvString, filename) {
+  const blob = new Blob([csvString], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+}
 
 init();
