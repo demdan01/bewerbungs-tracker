@@ -72,9 +72,7 @@ function render() {
   const countsByStatus = {};
   STATUSES.forEach((s) => (countsByStatus[s] = 0));
 
-  const visibleApps = state.apps.filter((app) => {
-  return matchesQuery(app, state.query) && matchesStatus(app, state.statusFilter);
-});
+  const visibleApps = getVisibleApps();
 
   visibleApps.forEach((app) => {
   const targetBody = bodiesByStatus[app.status];
@@ -111,7 +109,10 @@ function init() {
 }
 
 function bindEvents() {
+  if (bindEvents._bound) return;
+  bindEvents._bound = true;
 
+  // Search
   searchInput.addEventListener("input", (e) => {
     state.query = e.target.value.trim().toLowerCase();
     render();
@@ -122,98 +123,35 @@ function bindEvents() {
     render();
   });
 
-  boardTrackEl.addEventListener("click", (e) => {
-    const action = e.target.dataset.action;
-
-    if (action !== "delete" && action !== "edit") return;
-
-    const cardEl = e.target.closest(".card");
-    if (!cardEl) return;
-
-    const cardId = cardEl.dataset.id;
-
-    if (action === "delete") {
-      const willDelete = confirm("Willst du das wirklich löschen?");
-      if (!willDelete) return;
-
-      const index = state.apps.findIndex((app) => app.id === cardId);
-      if (index !== -1) {
-        state.apps.splice(index, 1);
-        saveApps(state.apps);
-        render();
-      }
-      return;
-    }
-
-    if (action === "edit") {
-      const app = state.apps.find((a) => a.id === cardId);
-      if (!app) return;
-
-      state.editingId = cardId;
-
-      companyInput.value = app.company ?? "";
-      roleInput.value = app.role ?? "";
-      statusInput.value = app.status ?? "open";
-      dateInput.value = app.appliedAt ?? "";
-      linkInput.value = app.link ?? "";
-
-      modalEl.showModal();
-    }
-    });
-
-  boardTrackEl.addEventListener("change", (e) => {
-  if (e.target.dataset.action !== "status") return;
-
-  const cardEl = e.target.closest(".card");
-  if (!cardEl) return;
-
-  const cardId = cardEl.dataset.id;
-  const newStatus = e.target.value;
-
-  const app = state.apps.find((a) => a.id === cardId);
-  if (!app) return;
-
-  app.status = newStatus;
-  saveApps(state.apps);
-  render();
+  btnNew.addEventListener("click", () => {
+    state.editingId = null;
+    formEl.reset();
+    statusInput.value = "open";
+    modalEl.showModal();
   });
 
-  btnExportCsv.addEventListener("click", () => {
-    const csv = toCsv(state.apps);
-    downloadCsv(csv, "bewerbungen.csv");
+  cancelBtn.addEventListener("click", () => {
+    state.editingId = null;
+    modalEl.close();
+    formEl.reset();
+    statusInput.value = "open";
   });
-  }
 
-  function clearColumns() {
-    STATUSES.forEach((status) => {
-      const bodyEl = bodiesByStatus[status];
-      if (!bodyEl) throw new Error(`Missing body element for status: ${status}`);
-      bodyEl.innerHTML = "";
-    });
+  formEl.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-    btnNew.addEventListener("click", () => {
-      state.editingId = null;
-      formEl.reset();
-      statusInput.value = "open";
-      modalEl.showModal();
-    });
-
-    formEl.addEventListener("submit", (e) => {
-    e.preventDefault(); 
-
-    const companyField  = companyInput.value.trim();
-    const roleField     = roleInput.value.trim();
-    let   statusField   = statusInput.value;     
-    const dateField     = dateInput.value;         
-    const linkField     = linkInput.value.trim();
-
-    if (!STATUSES.includes(statusField)) statusField = "open";
+    const companyField = companyInput.value.trim();
+    const roleField = roleInput.value.trim();
+    let statusField = statusInput.value;
+    const dateField = dateInput.value;
+    const linkField = linkInput.value.trim();
 
     if (!companyField || !roleField) return;
+    if (!STATUSES.includes(statusField)) statusField = "open";
 
     if (state.editingId === null) {
       const newId = Date.now().toString();
-    
+
       state.apps.unshift({
         id: newId,
         company: companyField,
@@ -226,11 +164,11 @@ function bindEvents() {
       const app = state.apps.find((a) => a.id === state.editingId);
       if (!app) return;
 
-      app.company   = companyField;
-      app.role      = roleField;
-      app.status    = statusField;
+      app.company = companyField;
+      app.role = roleField;
+      app.status = statusField;
       app.appliedAt = dateField;
-      app.link      = linkField;
+      app.link = linkField;
 
       state.editingId = null;
     }
@@ -240,15 +178,72 @@ function bindEvents() {
 
     modalEl.close();
     formEl.reset();
-
     statusInput.value = "open";
   });
 
-  cancelBtn.addEventListener("click", () => {
-    state.editingId = null;
-    modalEl.close();
-    formEl.reset();
-    statusInput.value = "open";
+  boardTrackEl.addEventListener("click", (e) => {
+    const actionEl = e.target.closest("[data-action]");
+    if (!actionEl) return;
+
+    const action = actionEl.dataset.action;
+    if (action !== "delete" && action !== "edit") return;
+
+    const cardEl = actionEl.closest(".card");
+    if (!cardEl) return;
+
+    const cardId = cardEl.dataset.id;
+
+    if (action === "delete") {
+      const willDelete = confirm("Willst du das wirklich löschen?");
+      if (!willDelete) return;
+
+      const index = state.apps.findIndex((app) => app.id === cardId);
+      if (index === -1) return;
+
+      state.apps.splice(index, 1);
+      saveApps(state.apps);
+      render();
+      return;
+    }
+
+    if (action === "edit") {
+      const app = state.apps.find((a) => a.id === cardId);
+      if (!app) return;
+
+      state.editingId = cardId;
+
+      companyInput.value = app.company ?? "";
+      roleInput.value = app.role ?? "";
+      statusInput.value = STATUSES.includes(app.status) ? app.status : "open";
+      dateInput.value = app.appliedAt ?? "";
+      linkInput.value = app.link ?? "";
+
+      modalEl.showModal();
+    }
+  });
+
+  boardTrackEl.addEventListener("change", (e) => {
+    if (e.target.dataset.action !== "status") return;
+
+    const cardEl = e.target.closest(".card");
+    if (!cardEl) return;
+
+    const cardId = cardEl.dataset.id;
+    const newStatus = e.target.value;
+
+    if (!STATUSES.includes(newStatus)) return;
+
+    const app = state.apps.find((a) => a.id === cardId);
+    if (!app) return;
+
+    app.status = newStatus;
+    saveApps(state.apps);
+    render();
+  });
+
+  btnExportCsv.addEventListener("click", () => {
+    const csv = toCsv(state.apps);
+    downloadCsv(csv, "bewerbungen.csv");
   });
 }
 
@@ -371,6 +366,12 @@ function downloadCsv(csvString, filename) {
   a.remove();
 
   URL.revokeObjectURL(url);
+}
+
+function getVisibleApps() {
+  return state.apps.filter((app) => {
+    return matchesQuery(app, state.query) && matchesStatus(app, state.statusFilter);
+  });
 }
 
 init();
