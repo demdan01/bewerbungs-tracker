@@ -107,7 +107,45 @@
           </div>
         </main>
 
-        
+        <dialog id="appModal">
+          <form id="appForm" method="dialog">
+            <h2>Bewerbung speichern</h2>
+
+            <label for="companyInput">Company *</label>
+            <input id="companyInput" name="company" type="text" required />
+
+            <label for="roleInput">Role *</label>
+            <input id="roleInput" name="role" type="text" required />
+
+            <label for="statusInput">Status</label>
+            <select id="statusInput" name="status">
+              <option value="">– bitte wählen –</option>
+              <option value="applied">Applied</option>
+              <option value="interview">Interview</option>
+              <option value="offer">Offer</option>
+              <option value="rejected">Rejected</option>
+            </select>
+
+            <label for="dateInput">Applied at</label>
+            <input id="dateInput" name="appliedAt" type="date" />
+
+            <label for="linkInput">Link</label>
+            <input
+              id="linkInput"
+              name="link"
+              type="url"
+              placeholder="https://..."
+            />
+
+            <div class="buttons">
+              <button type="submit">Save</button>
+              <button type="button" id="cancelBtn">Cancel</button>
+            </div>
+          </form>
+        </dialog>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
