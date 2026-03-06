@@ -16,6 +16,7 @@ const statusInput     = document.getElementById("statusInput");
 const dateInput       = document.getElementById("dateInput");
 const linkInput       = document.getElementById("linkInput");
 const cancelBtn       = document.getElementById("cancelBtn");
+const errorMessage    = document.getElementById("errorMessage");
 
 
 
@@ -151,7 +152,17 @@ function bindEvents() {
     const dateField = dateInput.value;
     const linkField = linkInput.value.trim();
 
-    if (!companyField || !roleField) return;
+    if (!companyField) {
+      setFormError("Bitte Firma eingeben!")
+      companyInput.focus;
+      return;
+    } else if(!roleField) {
+      setFormError("Bitte Rolle eingeben!")
+      roleInput.focus;
+      return;
+    } else if(companyField && rolefield) {
+      clearFormError();
+    }
     if (!STATUSES.includes(statusField)) statusField = "open";
 
     if (state.editingId === null) {
@@ -250,6 +261,14 @@ function bindEvents() {
 
   modalEl.addEventListener("close", () => {  
     resetModalState();
+  });
+
+  companyInput.addEventListener("input", () => { 
+    clearFormError();
+  });
+
+  roleInput.addEventListener("input", () => { 
+    clearFormError();
   });
 }
 
@@ -384,6 +403,15 @@ function resetModalState() {
   state.editingId = null;
   formEl.reset();
   statusInput.value = "open";
+  clearFormError();
+}
+
+function setFormError(message) { 
+  errorMessage.textContent = message;
+}
+
+function clearFormError() {
+  errorMessage.textContent = "";
 }
 
 init();

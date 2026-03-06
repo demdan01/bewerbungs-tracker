@@ -228,6 +228,11 @@ button, input, select {
   text-decoration: underline;
 }
 
+.form__error{
+  color: red;
+  font-weight: bold;
+}
+  
 @media (max-width: 768px) {
 
    .container {
@@ -279,6 +284,6 @@ button, input, select {
     width: 100%;
   }
 }
-  
+
 
 

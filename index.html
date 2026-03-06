@@ -108,7 +108,7 @@
         </main>
 
         <dialog id="appModal">
-          <form id="appForm" method="dialog">
+          <form id="appForm" method="dialog" novalidate>
             <h2>Bewerbung speichern</h2>
 
             <label for="companyInput">Company *</label>
@@ -136,7 +136,7 @@
               type="url"
               placeholder="https://..."
             />
-
+            <div id="errorMessage" class="form__error" aria-live="polite"></div>
             <div class="buttons">
               <button type="submit">Save</button>
               <button type="button" id="cancelBtn">Cancel</button>
