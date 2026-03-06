@@ -103,16 +103,19 @@ STATUSES.forEach((s) => {
 function init() {
   bindEvents();
 
+  const hadStorage = localStorage.getItem("bt.apps.v1") !== null;
+
   state.apps = loadApps();
 
-  if (state.apps.length === 0) {
+  if (!hadStorage) {
     state.apps = [
-      { id: "1", company: "Musterfirma GmbH", role: "Fachinformatiker AE", status: "open", appliedAt: "2026-02-23", link: "#" },
-      { id: "2", company: "Beispiel AG", role: "IT Support", status: "interview", appliedAt: "2026-02-20" },
-      { id: "3", company: "Demo KG", role: "Systemintegration", status: "rejected" },
-    ];
+        { id: "1", company: "Musterfirma GmbH", role: "Fachinformatiker AE", status: "open", appliedAt: "2026-02-23", link: "#" },
+        { id: "2", company: "Beispiel AG", role: "IT Support", status: "interview", appliedAt: "2026-02-20" },
+        { id: "3", company: "Demo KG", role: "Systemintegration", status: "rejected" },
+      ];
     saveApps(state.apps);
   }
+  state.apps = state.apps.map((a) => normalizeApp(a));
 
   render();
 }
@@ -144,55 +147,73 @@ function bindEvents() {
   });
 
   formEl.addEventListener("submit", (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const companyField = companyInput.value.trim();
-    const roleField = roleInput.value.trim();
-    let statusField = statusInput.value;
-    const dateField = dateInput.value;
-    const linkField = linkInput.value.trim();
+  const companyField = companyInput.value.trim();
+  const roleField = roleInput.value.trim();
+  let statusField = statusInput.value;
+  const dateField = dateInput.value.trim(); // <- trim
+  const linkField = linkInput.value.trim();
 
-    if (!companyField) {
-      setFormError("Bitte Firma eingeben!")
-      companyInput.focus;
-      return;
-    } else if(!roleField) {
-      setFormError("Bitte Rolle eingeben!")
-      roleInput.focus;
-      return;
-    } else if(companyField && rolefield) {
-      clearFormError();
-    }
-    if (!STATUSES.includes(statusField)) statusField = "open";
+  clearFormError();
 
-    if (state.editingId === null) {
-      const newId = Date.now().toString();
+  const rawLink = linkField;
+  const normalizedLink = normalizeLink(rawLink);
 
-      state.apps.unshift({
-        id: newId,
-        company: companyField,
-        role: roleField,
-        status: statusField,
-        appliedAt: dateField,
-        link: linkField,
-      });
-    } else {
-      const app = state.apps.find((a) => a.id === state.editingId);
-      if (!app) return;
+  if (rawLink && !normalizedLink) {
+    setFormError("Bitte einen gültigen Link eingeben (z.B. https://...).");
+    linkInput.focus();
+    return;
+  }
 
-      app.company = companyField;
-      app.role = roleField;
-      app.status = statusField;
-      app.appliedAt = dateField;
-      app.link = linkField;
+  if (!companyField) {
+    setFormError("Bitte Firma eingeben!");
+    companyInput.focus();
+    return;
+  }
 
-    }
+  if (!roleField) {
+    setFormError("Bitte Rolle eingeben!");
+    roleInput.focus();
+    return;
+  }
 
-    saveApps(state.apps);
-    render();
+  
+  const { ok, msg } = validateAppliedAt(dateField, dateInput.min, dateInput.max);
+  if (!ok) {
+    setFormError(msg);
+    dateInput.focus();
+    return;
+  }
 
-    modalEl.close();
-  });
+  statusField = normalizeStatus(statusField);
+
+  if (state.editingId === null) {
+    const newId = Date.now().toString();
+
+    state.apps.unshift({
+      id: newId,
+      company: companyField,
+      role: roleField,
+      status: statusField,
+      appliedAt: dateField,  
+      link: normalizedLink,
+    });
+  } else {
+    const app = state.apps.find((a) => a.id === state.editingId);
+    if (!app) return;
+
+    app.company = companyField;
+    app.role = roleField;
+    app.status = statusField;
+    app.appliedAt = dateField;
+    app.link = normalizedLink;
+  }
+
+  saveApps(state.apps);
+  render();
+  modalEl.close();
+});
 
   boardTrackEl.addEventListener("click", (e) => {
     const actionEl = e.target.closest("[data-action]");
@@ -242,9 +263,8 @@ function bindEvents() {
     if (!cardEl) return;
 
     const cardId = cardEl.dataset.id;
-    const newStatus = e.target.value;
-
-    if (!STATUSES.includes(newStatus)) return;
+  
+    const newStatus = normalizeStatus(e.target.value);
 
     const app = state.apps.find((a) => a.id === cardId);
     if (!app) return;
@@ -269,6 +289,10 @@ function bindEvents() {
 
   roleInput.addEventListener("input", () => { 
     clearFormError();
+  });
+
+  dateInput.addEventListener("input", () => {
+  clearFormError();
   });
 }
 
@@ -321,6 +345,8 @@ function createCard(app) {
     const link = document.createElement("a");
     link.classList.add("card__link");
     link.href = app.link;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
     link.textContent = "Link";
     article.appendChild(link);
   }
@@ -413,5 +439,85 @@ function setFormError(message) {
 function clearFormError() {
   errorMessage.textContent = "";
 }
+
+function normalizeStatus(value) {
+  if(STATUSES.includes(value)) return value;
+  return "open";
+}
+
+function normalizeLink(value)  {
+  const v = (value ?? "").trim();
+  if (!v) return "";
+
+  let url = v;
+
+  const hasScheme = /^https?:\/\//i.test(url);
+  if (!hasScheme) {
+    if (url.startsWith("www.")) url = "https://" + url;
+    else if (url.includes(".") && !/\s/.test(url)) url = "https://" + url;
+    else return "";
+  }
+
+  try {
+    const u = new URL(url);
+    if (u.protocol !== "http:" && u.protocol !== "https:") return "";
+    return u.toString();
+  } catch {
+    return "";
+  }
+}
+
+function normalizeApp(a) {
+  const app = a ?? {};
+  return {
+    id: String(app.id ?? Date.now()),
+    company: String(app.company ?? "").trim(),
+    role: String(app.role ?? "").trim(),
+    status: normalizeStatus(app.status),
+    appliedAt: String(app.appliedAt ?? "").trim(),
+    link: normalizeLink(app.link),
+  };
+}
+
+
+function isValidDate(value) {
+  if (!value) return true;
+
+  const iso = /^\d{4}-\d{2}-\d{2}$/;
+  if (!iso.test(value)) return false;
+
+  const [yStr, mStr, dStr] = value.split("-");
+  const y = Number(yStr);
+  const m = Number(mStr);
+  const d = Number(dStr);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+
+  return (
+    dt.getUTCFullYear() === y &&
+    dt.getUTCMonth() === m - 1 &&
+    dt.getUTCDate() === d
+  );
+
+}
+
+  function validateAppliedAt(value, min, max) {
+  const v = (value ?? "").trim();
+  if (!v) return { ok: true }; 
+
+  if (!isValidDate(v)) {
+    return { ok: false, msg: "Bitte ein gültiges Datum auswählen (YYYY-MM-DD)." };
+  }
+
+  
+  if (min && v < min) {
+    return { ok: false, msg: `Datum darf nicht vor ${min} liegen.` };
+  }
+  if (max && v > max) {
+    return { ok: false, msg: `Datum darf nicht nach ${max} liegen.` };
+  }
+
+  return { ok: true };
+}
+  
 
 init();
