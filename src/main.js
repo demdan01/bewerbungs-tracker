@@ -115,7 +115,15 @@ function init() {
       ];
     saveApps(state.apps);
   }
-  state.apps = state.apps.map((a) => normalizeApp(a));
+  const before = JSON.stringify(state.apps);
+  const normalized = state.apps.map((a) => normalizeApp(a));
+  const after = JSON.stringify(normalized);
+
+  state.apps = normalized;
+
+  if (before !== after) {
+    saveApps(state.apps);
+  }
 
   render();
 }
@@ -474,11 +482,22 @@ function normalizeApp(a) {
     company: String(app.company ?? "").trim(),
     role: String(app.role ?? "").trim(),
     status: normalizeStatus(app.status),
-    appliedAt: String(app.appliedAt ?? "").trim(),
+    appliedAt: normalizeAppliedAt(app.appliedAt, dateInput.min, dateInput.max),
     link: normalizeLink(app.link),
   };
 }
 
+function normalizeAppliedAt(value, min, max) {
+  const v = String(value ?? "").trim();
+  if (!v) return "";
+
+  if (!isValidDate(v)) return "";
+
+  if (min && v < min) return "";
+  if (max && v > max) return "";
+
+  return v;
+}
 
 function isValidDate(value) {
   if (!value) return true;
