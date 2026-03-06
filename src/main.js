@@ -139,10 +139,7 @@ function bindEvents() {
   });
 
   cancelBtn.addEventListener("click", () => {
-    state.editingId = null;
     modalEl.close();
-    formEl.reset();
-    statusInput.value = "open";
   });
 
   formEl.addEventListener("submit", (e) => {
@@ -178,15 +175,12 @@ function bindEvents() {
       app.appliedAt = dateField;
       app.link = linkField;
 
-      state.editingId = null;
     }
 
     saveApps(state.apps);
     render();
 
     modalEl.close();
-    formEl.reset();
-    statusInput.value = "open";
   });
 
   boardTrackEl.addEventListener("click", (e) => {
@@ -252,6 +246,10 @@ function bindEvents() {
   btnExportCsv.addEventListener("click", () => {
     const csv = toCsv(getVisibleApps());
     downloadCsv(csv, "bewerbungen.csv");
+  });
+
+  modalEl.addEventListener("close", () => {  
+    resetModalState();
   });
 }
 
@@ -380,6 +378,12 @@ function getVisibleApps() {
   return state.apps.filter((app) => {
     return matchesQuery(app, state.query) && matchesStatus(app, state.statusFilter);
   });
+}
+
+function resetModalState() {
+  state.editingId = null;
+  formEl.reset();
+  statusInput.value = "open";
 }
 
 init();
