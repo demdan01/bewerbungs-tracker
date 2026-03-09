@@ -1,5 +1,5 @@
 
-import { loadApps, saveApps } from "./storage.js";
+import { loadApps, saveApps, STORAGE_KEY } from "./storage.js";
 
 /*DOM References*/
 const btnNew          = document.getElementById("btnNew");
@@ -103,7 +103,7 @@ STATUSES.forEach((s) => {
 function init() {
   bindEvents();
 
-  const hadStorage = localStorage.getItem("bt.apps.v1") !== null;
+  const hadStorage = localStorage.getItem(STORAGE_KEY) !== null;
 
   state.apps = loadApps();
 
@@ -197,7 +197,7 @@ function bindEvents() {
   statusField = normalizeStatus(statusField);
 
   if (state.editingId === null) {
-    const newId = Date.now().toString();
+    const newId = createId();
 
     state.apps.unshift({
       id: newId,
@@ -536,6 +536,13 @@ function isValidDate(value) {
   }
 
   return { ok: true };
+}
+
+function createId() {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
   
 
