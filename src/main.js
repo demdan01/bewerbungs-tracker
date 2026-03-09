@@ -21,6 +21,7 @@ const errorMessage    = document.getElementById("errorMessage");
 
 
 
+
 /*Status constants*/
 const STATUSES = ["open","interview","test","offer","rejected"];
 
@@ -76,28 +77,54 @@ function clearColumns() {
 }
 
 function render() {
-  clearColumns()
-  
+  clearColumns();
+
   const countsByStatus = {};
-  STATUSES.forEach((s) => (countsByStatus[s] = 0));
+
+  const fragsByStatus = {};
+
+  STATUSES.forEach((s) => {
+    countsByStatus[s] = 0;
+    fragsByStatus[s] = document.createDocumentFragment();
+  });
 
   const visibleApps = getVisibleApps();
 
   visibleApps.forEach((app) => {
-  const targetBody = bodiesByStatus[app.status];
-  if (!targetBody) {
-  console.warn("Skipping app with invalid status:", app);
-  return;
-  }
-  const cardEl = createCard(app);
-  targetBody.append(cardEl);
-  countsByStatus[app.status] += 1;
-});
+    const status = normalizeStatus(app.status);
 
-STATUSES.forEach((s) => {
-  const badgeEl = badgesByStatus[s];
-  badgeEl.textContent = countsByStatus[s];
-});
+    const frag = fragsByStatus[status];
+    if (!frag) {
+      console.warn("Skipping app with invalid status:", app);
+      return;
+    }
+
+    frag.appendChild(createCard(app));
+    countsByStatus[status] += 1;
+  });
+
+  STATUSES.forEach((status) => {
+    const bodyEl = bodiesByStatus[status];
+    const badgeEl = badgesByStatus[status];
+
+    if (!bodyEl || !badgeEl) {
+      console.warn("Missing body/badge for status:", status);
+      return;
+    }
+
+    const count = countsByStatus[status];
+
+    if (count === 0) {
+      const empty = document.createElement("div");
+      empty.className = "column__empty";
+      empty.textContent = "Keine Bewerbungen!";
+      bodyEl.appendChild(empty);
+    } else {
+      bodyEl.appendChild(fragsByStatus[status]);
+    }
+
+    badgeEl.textContent = String(count);
+  });
 }
 
 function init() {
@@ -107,6 +134,7 @@ function init() {
 
   state.apps = loadApps();
 
+  /*
   if (!hadStorage) {
     state.apps = [
         { id: "1", company: "Musterfirma GmbH", role: "Fachinformatiker AE", status: "open", appliedAt: "2026-02-23", link: "#" },
@@ -115,6 +143,8 @@ function init() {
       ];
     saveApps(state.apps);
   }
+  */
+
   const before = JSON.stringify(state.apps);
   const normalized = state.apps.map((a) => normalizeApp(a));
   const after = JSON.stringify(normalized);

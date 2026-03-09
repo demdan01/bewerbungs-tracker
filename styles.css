@@ -232,6 +232,15 @@ button, input, select {
   color: red;
   font-weight: bold;
 }
+
+.column__empty {
+  padding: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--muted);
+  font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
+}
   
 @media (max-width: 768px) {
 
