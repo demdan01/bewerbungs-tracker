@@ -205,7 +205,7 @@ function bindEvents() {
     }
 
     if (!roleField) {
-      setFormError("Bitte Rolle eingeben!");
+      setFormError("Bitte Stellenbezeichnung/Position eingeben!");
       roleInput.focus();
       return;
     }

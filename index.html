@@ -43,7 +43,7 @@
             </div>
 
             <div class="controls__export">
-              <button id="btnExportCsv" class="btn btn--secondary">Export CSV</button>
+              <button id="btnExportCsv" class="btn btn--secondary">Als CSV exportieren</button>
             </div>
           </div>
         </section>
@@ -99,10 +99,10 @@
           <form id="appForm" method="dialog" novalidate>
             <h2 class="modal__title" id="modalTitle">Bewerbung speichern</h2>
 
-            <label for="companyInput">Company *</label>
+            <label for="companyInput">Firma *</label>
             <input id="companyInput" name="company" type="text" required />
 
-            <label for="roleInput">Role *</label>
+            <label for="roleInput">Stellenbezeichnung *</label>
             <input id="roleInput" name="role" type="text" required />
 
             <label for="statusInput">Status</label>
@@ -114,14 +114,14 @@
               <option value="rejected">Abgelehnt</option>
             </select>
 
-            <label for="dateInput">Applied at</label>
+            <label for="dateInput">Beworben am</label>
             <input id="dateInput" name="appliedAt" type="date" min="2026-01-01" max="2050-12-31" />
 
             <label for="linkInput">Link</label>
             <input id="linkInput" name="link" type="url" placeholder="https://..." />
             <div id="errorMessage" class="form__error" aria-live="polite"></div>
             <div class="modal__actions">
-              <button type="button" id="cancelBtn" class="btn btn--secondary">Cancel</button>
+              <button type="button" id="cancelBtn" class="btn btn--secondary">Abbrechen</button>
               <button type="submit" class="btn btn--primary" id="saveBtn">Save</button>
             </div>
           </form>
