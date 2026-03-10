@@ -584,6 +584,33 @@ function createId() {
   }
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
-  
+
+function openCreateModal() {
+  state.editingId = null;
+  formEl.reset();
+  statusInput.value = "open";
+  modalTitle.textContent = "Neue Bewerbung anlegen";
+  saveBtn.textContent = "Speichern";
+  clearFormError();
+  modalEl.showModal();
+  companyInput.focus();
+}
+
+function openEditModal(app) {
+  state.editingId = app.id;
+  formEl.reset();
+  modalTitle.textContent = "Bewerbung bearbeiten";
+  saveBtn.textContent = "Änderungen speichern";
+
+  companyInput.value = app.company ?? "";
+  roleInput.value = app.role ?? "";
+  statusInput.value = STATUSES.includes(app.status) ? app.status : "open";
+  dateInput.value = app.appliedAt ?? "";
+  linkInput.value = app.link ?? "";
+
+  clearFormError();
+  modalEl.showModal();
+  companyInput.focus();
+}
 
 init();
