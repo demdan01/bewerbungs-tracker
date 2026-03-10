@@ -262,6 +262,8 @@ function bindEvents() {
     const cardId = cardEl.dataset.id;
 
     if (action === "delete") {
+      const willDelete = confirm("Willst du diese Bewerbung wirklich löschen?");
+      if (!willDelete) return;
       const cardId = cardEl.dataset.id;
       deleteAppById(cardId);
     }
@@ -595,10 +597,10 @@ function openEditModal(app) {
 }
 
 function deleteAppById(cardId) {
-  const willDelete = confirm("Willst du diese Bewerbung wirklich löschen?");
-  if (!willDelete) return;
+  if (cardId == null) return false;
 
-  const id = String(cardId);
+  const id = String(cardId).trim();
+  if (id === "") return false;
 
   const index = state.apps.findIndex((app) => String(app.id) === id);
   if (index === -1) return false;
