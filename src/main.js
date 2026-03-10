@@ -173,10 +173,7 @@ function bindEvents() {
   });
 
   btnNew.addEventListener("click", () => {
-    state.editingId = null;
-    formEl.reset();
-    statusInput.value = "open";
-    modalEl.showModal();
+    openCreateModal();
   });
 
   cancelBtn.addEventListener("click", () => {
@@ -281,15 +278,7 @@ function bindEvents() {
       const app = state.apps.find((a) => a.id === cardId);
       if (!app) return;
 
-      state.editingId = cardId;
-
-      companyInput.value = app.company ?? "";
-      roleInput.value = app.role ?? "";
-      statusInput.value = STATUSES.includes(app.status) ? app.status : "open";
-      dateInput.value = app.appliedAt ?? "";
-      linkInput.value = app.link ?? "";
-
-      modalEl.showModal();
+      openEditModal(app);
     }
   });
 
