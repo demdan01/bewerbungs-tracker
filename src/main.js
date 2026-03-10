@@ -342,7 +342,7 @@ function createCard(app) {
 
   cardStatusDropdown.add(new Option("Offen", "open"));
   cardStatusDropdown.add(new Option("Bewerbungsgespräch", "interview"));
-  cardStatusDropdown.add(new Option("Test", "test"));
+  cardStatusDropdown.add(new Option("Einstellungstest", "test"));
   cardStatusDropdown.add(new Option("Angebot", "offer"));
   cardStatusDropdown.add(new Option("Abgelehnt", "rejected"));
 
