@@ -18,9 +18,8 @@ const linkInput       = document.getElementById("linkInput");
 const cancelBtn       = document.getElementById("cancelBtn");
 const errorMessage    = document.getElementById("errorMessage");
 
-
-
-
+const modalTitle      = document.getElementById("modalTitle");
+const saveBtn         = document.getElementById("saveBtn");
 
 /*Status constants*/
 const STATUSES = ["open","interview","test","offer","rejected"];
