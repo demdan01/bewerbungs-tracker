@@ -127,22 +127,7 @@ function render() {
 
 function init() {
   bindEvents();
-
-  //const hadStorage = localStorage.getItem(STORAGE_KEY) !== null;
-
   state.apps = loadApps();
-
-  /*
-  if (!hadStorage) {
-    state.apps = [
-        { id: "1", company: "Musterfirma GmbH", role: "Fachinformatiker AE", status: "open", appliedAt: "2026-02-23", link: "#" },
-        { id: "2", company: "Beispiel AG", role: "IT Support", status: "interview", appliedAt: "2026-02-20" },
-        { id: "3", company: "Demo KG", role: "Systemintegration", status: "rejected" },
-      ];
-    saveApps(state.apps);
-  }
-  */
-
   const before = JSON.stringify(state.apps);
   const normalized = state.apps.map((a) => normalizeApp(a));
   const after = JSON.stringify(normalized);
