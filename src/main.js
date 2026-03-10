@@ -411,7 +411,7 @@ function escapeCsvValue(value, delimiter = ";") {
 
 function toCsv(apps) {
   const delimiter = ";";
-  const headers = ["id", "company", "role", "status", "appliedAt", "link"];
+  const headers = ["ID", "Firma", "Stellenbezeichnung", "Status", "Beworben am", "Link"];
 
   const lines = [];
   lines.push(headers.join(delimiter));
