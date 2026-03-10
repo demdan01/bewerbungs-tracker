@@ -262,16 +262,8 @@ function bindEvents() {
     const cardId = cardEl.dataset.id;
 
     if (action === "delete") {
-      const willDelete = confirm("Willst du das wirklich löschen?");
-      if (!willDelete) return;
-
-      const index = state.apps.findIndex((app) => app.id === cardId);
-      if (index === -1) return;
-
-      state.apps.splice(index, 1);
-      saveApps(state.apps);
-      render();
-      return;
+      const cardId = cardEl.dataset.id;
+      deleteAppById(cardId);
     }
 
     if (action === "edit") {
@@ -600,6 +592,21 @@ function openEditModal(app) {
   clearFormError();
   modalEl.showModal();
   companyInput.focus();
+}
+
+function deleteAppById(cardId) {
+  const willDelete = confirm("Willst du diese Bewerbung wirklich löschen?");
+  if (!willDelete) return;
+
+  const id = String(cardId);
+
+  const index = state.apps.findIndex((app) => String(app.id) === id);
+  if (index === -1) return false;
+
+  state.apps.splice(index, 1);
+  saveApps(state.apps);
+  render();
+  return true;
 }
 
 init();
