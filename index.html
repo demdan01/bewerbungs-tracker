@@ -98,9 +98,9 @@
           </div>
         </main>
 
-        <dialog id="appModal">
+        <dialog id="appModal" class="modal">
           <form id="appForm" method="dialog" novalidate>
-            <h2>Bewerbung speichern</h2>
+            <h2 class="modal__title">Bewerbung speichern</h2>
 
             <label for="companyInput">Company *</label>
             <input id="companyInput" name="company" type="text" required />
@@ -128,9 +128,9 @@
               placeholder="https://..."
             />
             <div id="errorMessage" class="form__error" aria-live="polite"></div>
-            <div class="buttons">
-              <button type="submit">Save</button>
-              <button type="button" id="cancelBtn">Cancel</button>
+            <div class="modal__actions">
+              <button type="button" id="cancelBtn" class="btn btn--secondary">Cancel</button>
+              <button type="submit" class="btn btn--primary">Save</button>
             </div>
           </form>
         </dialog>
