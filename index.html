@@ -43,9 +43,7 @@
             </div>
 
             <div class="controls__export">
-              <button id="btnExportCsv" class="btn btn--secondary">
-                Export CSV
-              </button>
+              <button id="btnExportCsv" class="btn btn--secondary">Export CSV</button>
             </div>
           </div>
         </section>
@@ -59,8 +57,7 @@
                   <span class="column__badge">0</span>
                 </div>
 
-                <div class="column__body" data-list="open">
-                </div>
+                <div class="column__body" data-list="open"></div>
               </section>
 
               <section class="column" data-status="interview">
@@ -117,16 +114,11 @@
               <option value="rejected">Abgelehnt</option>
             </select>
 
-            <label for="dateInput" >Applied at</label>
-            <input id="dateInput" name="appliedAt" type="date"  min="2026-01-01" max="2050-12-31"/>
+            <label for="dateInput">Applied at</label>
+            <input id="dateInput" name="appliedAt" type="date" min="2026-01-01" max="2050-12-31" />
 
             <label for="linkInput">Link</label>
-            <input
-              id="linkInput"
-              name="link"
-              type="url"
-              placeholder="https://..."
-            />
+            <input id="linkInput" name="link" type="url" placeholder="https://..." />
             <div id="errorMessage" class="form__error" aria-live="polite"></div>
             <div class="modal__actions">
               <button type="button" id="cancelBtn" class="btn btn--secondary">Cancel</button>

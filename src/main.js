@@ -1,28 +1,27 @@
-
 import { loadApps, saveApps, STORAGE_KEY } from "./storage.js";
 
 /*DOM References*/
-const btnNew          = document.getElementById("btnNew");
-const searchInput     = document.getElementById("searchInput");
-const statusFilter    = document.getElementById("statusFilter");
-const btnExportCsv    = document.getElementById("btnExportCsv");
-const boardTrackEl    = document.querySelector(".board__track");
+const btnNew = document.getElementById("btnNew");
+const searchInput = document.getElementById("searchInput");
+const statusFilter = document.getElementById("statusFilter");
+const btnExportCsv = document.getElementById("btnExportCsv");
+const boardTrackEl = document.querySelector(".board__track");
 
-const modalEl         = document.getElementById("appModal");
-const formEl          = document.getElementById("appForm");
-const companyInput    = document.getElementById("companyInput");
-const roleInput       = document.getElementById("roleInput");
-const statusInput     = document.getElementById("statusInput");
-const dateInput       = document.getElementById("dateInput");
-const linkInput       = document.getElementById("linkInput");
-const cancelBtn       = document.getElementById("cancelBtn");
-const errorMessage    = document.getElementById("errorMessage");
+const modalEl = document.getElementById("appModal");
+const formEl = document.getElementById("appForm");
+const companyInput = document.getElementById("companyInput");
+const roleInput = document.getElementById("roleInput");
+const statusInput = document.getElementById("statusInput");
+const dateInput = document.getElementById("dateInput");
+const linkInput = document.getElementById("linkInput");
+const cancelBtn = document.getElementById("cancelBtn");
+const errorMessage = document.getElementById("errorMessage");
 
-const modalTitle      = document.getElementById("modalTitle");
-const saveBtn         = document.getElementById("saveBtn");
+const modalTitle = document.getElementById("modalTitle");
+const saveBtn = document.getElementById("saveBtn");
 
 /*Status constants*/
-const STATUSES = ["open","interview","test","offer","rejected"];
+const STATUSES = ["open", "interview", "test", "offer", "rejected"];
 
 /* Map: status -> column body (render target for cards) */
 const bodyEls = document.querySelectorAll(".column__body[data-list]");
@@ -64,8 +63,8 @@ const state = {
   apps: [],
   query: "",
   statusFilter: "all",
-  editingId: null
-}
+  editingId: null,
+};
 
 function clearColumns() {
   STATUSES.forEach((status) => {
@@ -181,73 +180,72 @@ function bindEvents() {
   });
 
   formEl.addEventListener("submit", (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const companyField = companyInput.value.trim();
-  const roleField = roleInput.value.trim();
-  let statusField = statusInput.value;
-  const dateField = dateInput.value.trim(); // <- trim
-  const linkField = linkInput.value.trim();
+    const companyField = companyInput.value.trim();
+    const roleField = roleInput.value.trim();
+    let statusField = statusInput.value;
+    const dateField = dateInput.value.trim(); // <- trim
+    const linkField = linkInput.value.trim();
 
-  clearFormError();
+    clearFormError();
 
-  const rawLink = linkField;
-  const normalizedLink = normalizeLink(rawLink);
+    const rawLink = linkField;
+    const normalizedLink = normalizeLink(rawLink);
 
-  if (rawLink && !normalizedLink) {
-    setFormError("Bitte einen gültigen Link eingeben (z.B. https://...).");
-    linkInput.focus();
-    return;
-  }
+    if (rawLink && !normalizedLink) {
+      setFormError("Bitte einen gültigen Link eingeben (z.B. https://...).");
+      linkInput.focus();
+      return;
+    }
 
-  if (!companyField) {
-    setFormError("Bitte Firma eingeben!");
-    companyInput.focus();
-    return;
-  }
+    if (!companyField) {
+      setFormError("Bitte Firma eingeben!");
+      companyInput.focus();
+      return;
+    }
 
-  if (!roleField) {
-    setFormError("Bitte Rolle eingeben!");
-    roleInput.focus();
-    return;
-  }
+    if (!roleField) {
+      setFormError("Bitte Rolle eingeben!");
+      roleInput.focus();
+      return;
+    }
 
-  
-  const { ok, msg } = validateAppliedAt(dateField, dateInput.min, dateInput.max);
-  if (!ok) {
-    setFormError(msg);
-    dateInput.focus();
-    return;
-  }
+    const { ok, msg } = validateAppliedAt(dateField, dateInput.min, dateInput.max);
+    if (!ok) {
+      setFormError(msg);
+      dateInput.focus();
+      return;
+    }
 
-  statusField = normalizeStatus(statusField);
+    statusField = normalizeStatus(statusField);
 
-  if (state.editingId === null) {
-    const newId = createId();
+    if (state.editingId === null) {
+      const newId = createId();
 
-    state.apps.unshift({
-      id: newId,
-      company: companyField,
-      role: roleField,
-      status: statusField,
-      appliedAt: dateField,  
-      link: normalizedLink,
-    });
-  } else {
-    const app = state.apps.find((a) => a.id === state.editingId);
-    if (!app) return;
+      state.apps.unshift({
+        id: newId,
+        company: companyField,
+        role: roleField,
+        status: statusField,
+        appliedAt: dateField,
+        link: normalizedLink,
+      });
+    } else {
+      const app = state.apps.find((a) => a.id === state.editingId);
+      if (!app) return;
 
-    app.company = companyField;
-    app.role = roleField;
-    app.status = statusField;
-    app.appliedAt = dateField;
-    app.link = normalizedLink;
-  }
+      app.company = companyField;
+      app.role = roleField;
+      app.status = statusField;
+      app.appliedAt = dateField;
+      app.link = normalizedLink;
+    }
 
-  saveApps(state.apps);
-  render();
-  modalEl.close();
-});
+    saveApps(state.apps);
+    render();
+    modalEl.close();
+  });
 
   boardTrackEl.addEventListener("click", (e) => {
     const actionEl = e.target.closest("[data-action]");
@@ -283,7 +281,7 @@ function bindEvents() {
     if (!cardEl) return;
 
     const cardId = cardEl.dataset.id;
-  
+
     const newStatus = normalizeStatus(e.target.value);
 
     const app = state.apps.find((a) => a.id === cardId);
@@ -299,20 +297,20 @@ function bindEvents() {
     downloadCsv(csv, "bewerbungen.csv");
   });
 
-  modalEl.addEventListener("close", () => {  
+  modalEl.addEventListener("close", () => {
     resetModalState();
   });
 
-  companyInput.addEventListener("input", () => { 
+  companyInput.addEventListener("input", () => {
     clearFormError();
   });
 
-  roleInput.addEventListener("input", () => { 
+  roleInput.addEventListener("input", () => {
     clearFormError();
   });
 
   dateInput.addEventListener("input", () => {
-  clearFormError();
+    clearFormError();
   });
 }
 
@@ -412,7 +410,6 @@ function escapeCsvValue(value, delimiter = ";") {
 }
 
 function toCsv(apps) {
-  
   const delimiter = ";";
   const headers = ["id", "company", "role", "status", "appliedAt", "link"];
 
@@ -420,14 +417,9 @@ function toCsv(apps) {
   lines.push(headers.join(delimiter));
 
   apps.forEach((app) => {
-    const row = [
-      app.id,
-      app.company,
-      app.role,
-      app.status,
-      app.appliedAt,
-      app.link,
-    ].map((v) => escapeCsvValue(v, delimiter));
+    const row = [app.id, app.company, app.role, app.status, app.appliedAt, app.link].map((v) =>
+      escapeCsvValue(v, delimiter)
+    );
 
     lines.push(row.join(delimiter));
   });
@@ -463,7 +455,7 @@ function resetModalState() {
   clearFormError();
 }
 
-function setFormError(message) { 
+function setFormError(message) {
   errorMessage.textContent = message;
 }
 
@@ -472,11 +464,11 @@ function clearFormError() {
 }
 
 function normalizeStatus(value) {
-  if(STATUSES.includes(value)) return value;
+  if (STATUSES.includes(value)) return value;
   return "open";
 }
 
-function normalizeLink(value)  {
+function normalizeLink(value) {
   const v = (value ?? "").trim();
   if (!v) return "";
 
@@ -534,23 +526,17 @@ function isValidDate(value) {
   const d = Number(dStr);
   const dt = new Date(Date.UTC(y, m - 1, d));
 
-  return (
-    dt.getUTCFullYear() === y &&
-    dt.getUTCMonth() === m - 1 &&
-    dt.getUTCDate() === d
-  );
-
+  return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
 }
 
-  function validateAppliedAt(value, min, max) {
+function validateAppliedAt(value, min, max) {
   const v = (value ?? "").trim();
-  if (!v) return { ok: true }; 
+  if (!v) return { ok: true };
 
   if (!isValidDate(v)) {
     return { ok: false, msg: "Bitte ein gültiges Datum auswählen (YYYY-MM-DD)." };
   }
 
-  
   if (min && v < min) {
     return { ok: false, msg: `Datum darf nicht vor ${min} liegen.` };
   }
