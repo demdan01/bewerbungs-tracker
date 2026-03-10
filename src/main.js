@@ -128,7 +128,7 @@ function render() {
 function init() {
   bindEvents();
 
-  const hadStorage = localStorage.getItem(STORAGE_KEY) !== null;
+  //const hadStorage = localStorage.getItem(STORAGE_KEY) !== null;
 
   state.apps = loadApps();
 
@@ -160,7 +160,6 @@ function bindEvents() {
   if (bindEvents._bound) return;
   bindEvents._bound = true;
 
-  // Search
   searchInput.addEventListener("input", (e) => {
     state.query = e.target.value.trim().toLowerCase();
     render();
@@ -185,7 +184,7 @@ function bindEvents() {
     const companyField = companyInput.value.trim();
     const roleField = roleInput.value.trim();
     let statusField = statusInput.value;
-    const dateField = dateInput.value.trim(); // <- trim
+    const dateField = dateInput.value.trim(); 
     const linkField = linkInput.value.trim();
 
     clearFormError();
@@ -262,8 +261,9 @@ function bindEvents() {
     if (action === "delete") {
       const willDelete = confirm("Willst du diese Bewerbung wirklich löschen?");
       if (!willDelete) return;
-      const cardId = cardEl.dataset.id;
+
       deleteAppById(cardId);
+      return;
     }
 
     if (action === "edit") {
@@ -361,7 +361,7 @@ function createCard(app) {
   cardStatusDropdown.add(new Option("Angebot", "offer"));
   cardStatusDropdown.add(new Option("Abgelehnt", "rejected"));
 
-  cardStatusDropdown.value = app.status;
+    cardStatusDropdown.value = STATUSES.includes(app.status) ? app.status : "open";
 
   article.appendChild(actionsTop);
   article.appendChild(company);
