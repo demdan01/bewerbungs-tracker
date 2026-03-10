@@ -351,10 +351,25 @@ function createCard(app) {
   meta.classList.add("card__meta");
   meta.textContent = app.appliedAt ?? "";
 
-  const deleteButton = document.createElement("button");
-  deleteButton.classList.add("card__delete");
-  deleteButton.setAttribute("data-action", "delete");
-  deleteButton.textContent = "Löschen";
+  const actionsTop = document.createElement("div");
+  actionsTop.classList.add("card__actions--top");
+
+  const editBtn = document.createElement("button");
+  editBtn.type = "button";
+  editBtn.classList.add("card__icon-btn");
+  editBtn.dataset.action = "edit";
+  editBtn.setAttribute("aria-label", "Bearbeiten");
+  editBtn.textContent = "✎";
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.type = "button";
+  deleteBtn.classList.add("card__icon-btn");
+  deleteBtn.dataset.action = "delete";
+  deleteBtn.setAttribute("aria-label", "Löschen");
+  deleteBtn.textContent = "×";
+
+  actionsTop.appendChild(editBtn);
+  actionsTop.appendChild(deleteBtn);
 
   const cardStatusDropdown = document.createElement("select");
   cardStatusDropdown.classList.add("card__status");
@@ -368,15 +383,10 @@ function createCard(app) {
 
   cardStatusDropdown.value = app.status;
 
-  const editCardBtn = document.createElement("button");
-  editCardBtn.dataset.action = "edit";
-  editCardBtn.textContent = "Bearbeiten";
-
+  article.appendChild(actionsTop);
   article.appendChild(company);
   article.appendChild(role);
   article.appendChild(meta);
-  article.appendChild(editCardBtn);
-  article.appendChild(deleteButton);
   article.appendChild(cardStatusDropdown);
 
   if (app.link) {
@@ -388,6 +398,7 @@ function createCard(app) {
     link.textContent = "Link";
     article.appendChild(link);
   }
+
   return article;
 }
 

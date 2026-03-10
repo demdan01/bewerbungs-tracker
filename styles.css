@@ -88,7 +88,6 @@ button, input, select {
   color: var(--btn-primary-text);
   border: 1px solid var(--btn-primary-bg);
   border-radius: 6px;
-
 }
 
 .btn--secondary {
@@ -136,7 +135,6 @@ button, input, select {
   padding: 0 12px;
   border: 1px solid var(--border);
   background: var(--bg-page);
-  
 }
 
 .select {
@@ -228,7 +226,7 @@ button, input, select {
   text-decoration: underline;
 }
 
-.form__error{
+.form__error {
   color: red;
   font-weight: bold;
 }
@@ -241,10 +239,84 @@ button, input, select {
   font-size: var(--fs-meta);
   line-height: var(--lh-meta);
 }
-  
-@media (max-width: 768px) {
 
-   .container {
+.card {
+  position: relative;
+}
+
+.card__actions--top {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.card__icon-btn {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--muted);
+
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.card__icon-btn svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.card__icon-btn:hover {
+  opacity: 1;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.card__icon-btn:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.35);
+  outline-offset: 2px;
+}
+
+.card__status {
+  height: 28px;
+  padding: 0 28px 0 10px; 
+  font-size: var(--fs-meta);
+  color: var(--muted);
+
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+                    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.card__status:hover {
+  color: var(--text);
+}
+
+.card__status:focus {
+  outline: 2px solid rgba(0, 0, 0, 0.25);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .container {
     padding: 16px;
   }
 
@@ -260,7 +332,6 @@ button, input, select {
     hyphens: none;
   }
 
-  
   .header__right .btn {
     width: 100%;
   }
@@ -293,6 +364,3 @@ button, input, select {
     width: 100%;
   }
 }
-
-
-
